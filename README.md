@@ -188,28 +188,40 @@ To represent Head1 and Head2 embeddings, we can define the VisModel class as fol
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/audio-classification-resnet.git
-   cd audio-classification-resnet
+   git clone https://github.com/xValentim/mini-audio-classifier
+   cd mini-audio-classifier
    ```
 
 2. Install dependencies:
    ```bash
-   conda create --name audio_env python=3.8
-   conda activate audio_env
-   pip install -r requirements.txt
+   conda env create -f environment.yml
+   conda activate env_name
    ```
 
-3. Download and preprocess the Mini Speech Commands dataset.
+3. Download and preprocess the Mini Speech Commands dataset (you just need run the notebook in ``notebook/load_and_vis_data.ipynb``):
 
 4. Train the model:
-   ```bash
-   python train.py --epochs 50 --batch_size 32
-   ```
+   ```python
+    in_channels = 1 # Default
+    num_filters_list = [16, 32, 64, 64, 64] # Your configs
+    kernel_sizes = [3, 3, 3, 3, 3]
+    output_dim = 8
+    model = ResnetCNN(in_channels=in_channels,
+                    num_filters_list=num_filters_list,
+                    kernel_sizes=kernel_sizes,
+                    output_dim=output_dim) 
 
-5. Visualize embeddings:
-   ```bash
-   python visualize_embeddings.py
+    model.compile(optimizer=torch.optim.Adam(model.parameters(), lr=4e-3),
+                    loss_fn=nn.CrossEntropyLoss(),
+                    device='cuda', # Or 'cpu'
+                    metrics=["accuracy"])
+
+    history = model.fit(train_dataset, 
+                        n_epochs=15, 
+                        validation_split=0.2)
+
    ```
+5. Visualize embeddings: Run notebook in ``notebook/custom_classifier.ipynb``
 
 ## Results
 
